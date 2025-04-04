@@ -1,20 +1,47 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-title>
-      Blank
+      To-Do List
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-item>
+    <ion-input [(ngModel)]="newTaskName" placeholder="Nueva tarea"></ion-input>
+    <ion-select [(ngModel)]="selectedCategory">
+      <ion-select-option value="0">Sin Categoría</ion-select-option>
+      <ion-select-option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</ion-select-option>
+    </ion-select>
+    <ion-button (click)="addTask()">Agregar tarea</ion-button>
+  </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-item>
+    <ion-input [(ngModel)]="newCategoryName" placeholder="Nueva categoría"></ion-input>
+    <ion-button (click)="addCategory()">Agregar categoría</ion-button>
+  </ion-item>
+
+  <ion-segment [(ngModel)]="selectedCategory" (ionChange)="filterTasksByCategory(selectedCategory)">
+    <ion-segment-button value="0">Todas</ion-segment-button>
+    <ion-segment-button *ngFor="let category of categories" [value]="category.id">{{ category.name }}</ion-segment-button>
+  </ion-segment>
+
+  <ion-list>
+    <ion-item *ngFor="let task of filterTasksByCategory(selectedCategory)">
+      <ion-label [class.strikethrough]="task.completed">{{ task.name }}</ion-label>
+      <ion-checkbox [(ngModel)]="task.completed" (ionChange)="toggleTaskCompletion(task)"></ion-checkbox>
+      <ion-button (click)="deleteTask(task)" fill="clear">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item *ngFor="let category of categories">
+      <ion-label>{{ category.name }}</ion-label>
+      <ion-button (click)="deleteCategory(category)" fill="clear">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
