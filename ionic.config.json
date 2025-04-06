@@ -1,7 +1,8 @@
 {
   "name": "AppListTaks",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }

@@ -16,6 +16,18 @@
     <ion-button (click)="addTask()">Agregar tarea</ion-button>
   </ion-item>
 
+  <!-- Mostrar la nueva característica solo si el Feature Flag está activado -->
+  <div *ngIf="showNewFeature">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Nueva Característica</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Esta es una nueva característica activada a través de Firebase Remote Config.
+      </ion-card-content>
+    </ion-card>
+  </div>
+  
   <ion-item>
     <ion-input [(ngModel)]="newCategoryName" placeholder="Nueva categoría"></ion-input>
     <ion-button (click)="addCategory()">Agregar categoría</ion-button>

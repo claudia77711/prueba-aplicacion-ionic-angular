@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
+import { environment } from 'src/environments/environment';
 
 export interface Task {
   id: number;
@@ -26,20 +28,43 @@ export class HomePage implements OnInit {
   tasks: Task[] = [];
   categories: Category[] = [];
   newTaskName: string = '';
+  showNewFeature: boolean = true;
   newCategoryName: string = '';
   selectedCategory: number = 0;
 
 
-  constructor(private storage: Storage) {}
+  constructor(
+    private storage: Storage,
+    private remoteConfig: AngularFireRemoteConfig
+  ) {}
   ngOnInit() {
     this.storage.create();
     this.loadTasks();
     this.loadCategories();
+    this.fetchFeatureFlag();
   }
 
   async loadTasks() {
     const storedTasks = await this.storage.get('tasks');
     this.tasks = storedTasks || [];
+  }
+
+  // Obtener el Feature Flag de Remote Config
+  async fetchFeatureFlag() {
+    try {
+      // Fetch y activar la configuración remota de Firebase
+      await this.remoteConfig.fetchAndActivate();
+       // Obtener el valor de la configuración remota 'show_new_feature'
+    const configValue = await this.remoteConfig.getValue('show_new_feature');
+    // Convertir el valor a booleano
+    const showNewFeatureFlag = configValue.asBoolean();
+      console.log('NEWFEATUREFLAG', showNewFeatureFlag);
+       // Actualizamos la variable para controlar la UI
+      this.showNewFeature = true;
+      console.log('FLAG', this.showNewFeature);
+    } catch(error) {
+      console.error('Error al obtener el Feature Flag:', error);
+    };
   }
 
   async loadCategories() {
